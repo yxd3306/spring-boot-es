@@ -1,0 +1,10 @@
+cluster.name: my_es    #集群名，不同名称代表不同集群
+node.name: node_2    #节点名称，自定义
+bootstrap.memory_lock: false    #关闭锁内存
+network.host: 192.168.197.50    #绑定IP地址
+http.port: 9201    #绑定端口
+transport.tcp.port: 9301
+discovery.zen.ping.unicast.hosts: ["192.168.197.50:9300", "192.168.197.50:9301"]    #集群列表，类型数组，可以是IP或域名
+discovery.zen.minimum_master_nodes: 1    #节点数不能超过节点总数量
+http.cors.enabled: true    #开启http网络节点发现
+http.cors.allow-origin: "*"    #允许所有同网段节点发现
