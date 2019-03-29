@@ -32,6 +32,7 @@ import java.util.Map;
 @Service
 public class PoemServiceImpl implements PoemService{
 
+    // 被检索的列
     private static final String INDEX_TITLE = "title";
     private static final String INDEX_CONTENT = "content";
 
@@ -63,11 +64,14 @@ public class PoemServiceImpl implements PoemService{
      */
     @Override
     public Page<Poem> search(String query, Pageable pageable) {
+        // 设置检索条件 matchQuery必须存在  multiMatchQuery可能存在  具体查看--->>>https://blog.csdn.net/lom9357bye/article/details/52852533
         QueryBuilder queryTitle = QueryBuilders.matchQuery(INDEX_TITLE, query);
         QueryBuilder queryContent = QueryBuilders.multiMatchQuery(query,INDEX_CONTENT);
+        // BoolQueryBuilder用于组合查询 可以设置多条件  具体查看--->>>https://www.cnblogs.com/xiaocandou/p/8127371.html
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         boolQueryBuilder.must(queryTitle).should(queryContent);
 
+        // 给指定列设置高亮标签
         HighlightBuilder.Field titleHighLight = new HighlightBuilder.Field(INDEX_TITLE);
         titleHighLight.preTags("<span style='color:red'>");
         titleHighLight.postTags("</span>");
@@ -77,14 +81,23 @@ public class PoemServiceImpl implements PoemService{
         contentHighLight.postTags("</span>");
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(boolQueryBuilder)
+                .withQuery(boolQueryBuilder) // 需要执行的es语句
                 .withHighlightFields(
                         titleHighLight,
-                        contentHighLight)
-                .withPageable(pageable)
+                        contentHighLight) // 设置高亮
+                .withPageable(pageable) // 设置分页
                 .build();
 
+        // 使用springboot提供的类执行查询
         Page<Poem> poems = elasticsearchTemplate.queryForPage(searchQuery, Poem.class, new SearchResultMapper() {
+            /**
+             *
+             * @param response 返回的结果
+             * @param aClass 反射的javaBean
+             * @param pageable 分页对象
+             * @param <T> 返回泛型结果集
+             * @return
+             */
             @Override
             public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> aClass, Pageable pageable) {
                 List<Poem> poems = new ArrayList<>();
