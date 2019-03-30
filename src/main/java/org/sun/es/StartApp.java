@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  */
 
 @SpringBootApplication
-@EnableElasticsearchRepositories(basePackages = "org.sun.es.dao")
+@EnableElasticsearchRepositories(basePackages = "org.sun.es.dao") // 将es操作接口注入到spring容器
 public class StartApp {
 
     public static void main(String[] args) {

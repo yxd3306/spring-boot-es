@@ -1,6 +1,5 @@
 package org.sun.es.controller;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.sun.es.dao.PoemRepository;
 import org.sun.es.entity.Poem;
@@ -27,7 +25,6 @@ import java.util.List;
  */
 
 @Controller
-@Api(value = "前端搜索入口",tags = {"elasticsearch集群操作入口"})
 public class WebController {
     @Autowired
     private PoemServiceImpl poemService;
@@ -35,7 +32,6 @@ public class WebController {
     @Autowired
     PoemRepository poemRepository;
 
-    @ApiOperation(value = "elasticsearch插入数据")
     @GetMapping("/")
     public String index(Model model) {
         List<Poem> poems = new ArrayList<>();
@@ -63,7 +59,7 @@ public class WebController {
     @PostMapping("/search")
     public String search(String content, @RequestParam(value="pageIndex",required=false,defaultValue="0") int pageIndex,
                          @RequestParam(value="pageSize",required=false,defaultValue="10") int pageSize,Model model) {
-                Pageable pageable = new PageRequest(pageIndex,pageSize);
+                Pageable pageable = PageRequest.of(pageIndex,pageSize);
                 Page<Poem> poems = poemService.search(content,pageable);
                 List<Poem> list = poems.getContent();
                 model.addAttribute("poems",list);
