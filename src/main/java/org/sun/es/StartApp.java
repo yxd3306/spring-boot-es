@@ -2,6 +2,7 @@ package org.sun.es;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 @SpringBootApplication
 @EnableElasticsearchRepositories(basePackages = "org.sun.es.dao") // 将es操作接口注入到spring容器
-public class StartApp {
+public class StartApp extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(StartApp.class,args);
